@@ -46,3 +46,64 @@ Comece criando:
 - Página de dashboard;
 - Componente de tabela de tarefas editável;
 - Mock de integração com o agente de IA.
+
+## Estrutura de pastas (atual)
+
+```
+/frontend   # Aplicacao React + Vite + TypeScript + Tailwind
+/backend    # API Express em TypeScript com integraçao mock ao Gemini Flash 2.5
+```
+
+## Funcionalidades implementadas
+
+- Dashboard com métricas (projetos no prazo, em risco e atrasados) e criação rápida de novos projetos mockados.
+- Tela de projeto com grade editável de tarefas, visão Gantt simplificada e painel lateral do agente Gemini.
+- Estado global via Zustand/Immer com dados mock e mensagens do assistente.
+- Backend Express com rotas `/api/projects` e `/api/ai/actions`, mantendo os projetos em memória e gerando respostas simuladas do Gemini.
+
+## Como executar
+
+### Pré-requisitos
+- Node.js 18+
+- npm 9+
+
+### Backend
+```
+cd backend
+npm install
+npm run dev
+```
+
+Endpoints disponíveis:
+- `GET /health`
+- `GET /api/projects`
+- `GET /api/projects/:id`
+- `PUT /api/projects/:id/tasks/:taskId`
+- `POST /api/ai/actions`
+
+Variáveis de ambiente (opcionais) para o modo Gemini real:
+```
+GEMINI_API_KEY=coloque-sua-chave
+GEMINI_MODEL=gemini-2.0-flash
+PORT=4000
+```
+Sem essas variáveis, o backend responde com sugestões mockadas.
+
+### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+
+O Vite está configurado para proxy das rotas `/api` para `http://localhost:4000`.
+
+### Builds de produção
+- Frontend: `cd frontend && npm run build`
+- Backend: `cd backend && npm run build`
+
+## Próximos passos sugeridos
+
+- Interligar autenticação (Supabase/Auth) e persistência dos projetos em banco.
+- Substituir o mock do agente por chamadas reais ao Gemini/Vertex AI quando disponível.
+- Adicionar testes automatizados (unitários/integrados) e linting contínuo.
