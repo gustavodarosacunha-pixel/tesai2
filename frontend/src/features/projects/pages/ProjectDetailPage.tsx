@@ -16,18 +16,17 @@ export const ProjectDetailPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
   const project = useProjectStore(selectCurrentProject)
-  const selectProject = useProjectStore((state) => state.selectProject)
-  const createTask = useProjectStore((state) => state.createTask)
-  const updateTask = useProjectStore((state) => state.updateTask)
+  const createTask = useProjectStore.getState().createTask
+  const updateTask = useProjectStore.getState().updateTask
 
   useEffect(() => {
     if (projectId) {
-      const currentId = useProjectStore.getState().selectedProjectId
-      if (currentId !== projectId) {
-        selectProject(projectId)
+      const store = useProjectStore.getState()
+      if (store.selectedProjectId !== projectId) {
+        store.selectProject(projectId)
       }
     }
-  }, [projectId, selectProject])
+  }, [projectId])
 
   useEffect(() => {
     if (!project && projectId) {
