@@ -78,7 +78,7 @@ export const ProjectDetailPage = () => {
             </div>
             <div className="flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-xs font-semibold text-brand-700">
               <SparkIcon className="h-4 w-4" />
-              Assistido pelo agente de IA
+              Assistido pelo Gemini Flash 2.5
             </div>
           </div>
 

@@ -39,5 +39,5 @@ export interface AIActionResponse {
   project: Project
   summary: string
   suggestions: string[]
-  createdTasks?: Task[]
+  createdTasks?: Task[] | undefined
 }

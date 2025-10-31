@@ -66,10 +66,10 @@ export const AIAssistantPanel = () => {
       <div className="border-b border-slate-200 px-5 py-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
           <Sparkles className="h-4 w-4 text-brand-500" />
-          Assistente SmartProjectAI
+          Gemini Flash 2.5
         </div>
         <p className="mt-1 text-xs text-slate-500">
-          O agente utiliza o contexto do projeto selecionado para gerar tarefas, atualizar cronogramas e responder duvidas.
+          O agente da Google utiliza o contexto do projeto selecionado para gerar tarefas, atualizar cronogramas e responder duvidas.
         </p>
       </div>
 
@@ -90,7 +90,7 @@ export const AIAssistantPanel = () => {
       <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
         {currentProject && (
           <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
-            <p className="font-semibold text-slate-700">Projeto atual</p>
+            <p className="font-semibold text-slate-700">Projeto atual (contexto enviado ao Gemini)</p>
             <p className="mt-1">{currentProject.name}</p>
             <p className="mt-1">Owner: {currentProject.owner}</p>
             <p className="mt-1">Tarefas: {currentProject.tasks.length}</p>

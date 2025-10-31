@@ -10,15 +10,18 @@ const fallbackResponse = (payload: AIRequestPayload): AIActionResponse => ({
   project: {
     id: payload.projectId,
     name: 'Projeto mock',
-    description: 'Resposta gerada localmente porque o backend nao estava acessivel.',
+    description: 'Resposta gerada localmente porque o backend ou a API Gemini nao estavam acessiveis.',
     owner: 'mock@smartproject.ai',
     status: 'on_track',
     updatedAt: new Date().toISOString(),
     defaultAssignees: ['Equipe AI'],
     tasks: [],
   },
-  summary: `Nao foi possivel acessar a API. Mensagem original: ${payload.message}`,
-  suggestions: ['Verifique se o servidor backend esta em execucao', 'Confirme a variavel de ambiente OPENAI_API_KEY'],
+  summary: `Nao foi possivel acessar o assistente Gemini Flash 2.5. Mensagem original: ${payload.message}`,
+  suggestions: [
+    'Verifique se o servidor backend esta em execucao',
+    'Confirme a variavel de ambiente GEMINI_API_KEY e o modelo configurado',
+  ],
 })
 
 export const aiClient = {

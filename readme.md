@@ -51,7 +51,7 @@ Comece criando:
 
 ```
 /frontend   # Aplicacao React + Vite + Tailwind
-/backend    # API Express em TypeScript com mocks locais
+/backend    # API Express em TypeScript com integracao ao Gemini Flash 2.5
 ```
 
 ## Como executar o projeto
@@ -77,3 +77,13 @@ npm run dev
 ```
 
 A API expos endpoints mockados em `/api/projects` e `/api/ai/actions`. Ajuste a porta via variavel `PORT` em um arquivo `.env` se necessario.
+
+Para habilitar o Gemini Flash 2.5, informe ao menos:
+
+```
+GEMINI_API_KEY=coloque-sua-chave
+# Opcional: trocar o modelo (default: gemini-2.0-flash)
+GEMINI_MODEL=gemini-2.0-flash
+```
+
+Sem essas variaveis o backend mantem um modo de sugestoes locais para desenvolvimento offline.

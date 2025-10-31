@@ -5,5 +5,6 @@ dotenv.config()
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   port: Number(process.env.PORT ?? 4000),
-  openAiApiKey: process.env.OPENAI_API_KEY ?? 'mock-key',
+  geminiApiKey: process.env.GEMINI_API_KEY ?? '',
+  geminiModel: process.env.GEMINI_MODEL ?? 'gemini-2.0-flash',
 }
