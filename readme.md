@@ -46,3 +46,34 @@ Comece criando:
 - Página de dashboard;
 - Componente de tabela de tarefas editável;
 - Mock de integração com o agente de IA.
+
+## Estrutura de pastas
+
+```
+/frontend   # Aplicacao React + Vite + Tailwind
+/backend    # API Express em TypeScript com mocks locais
+```
+
+## Como executar o projeto
+
+### Pre-requisitos
+- Node.js 18+
+- npm 9+
+
+### Frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+
+O Vite esta configurado para proxy das rotas `/api` para `http://localhost:4000` durante o desenvolvimento.
+
+### Backend
+```
+cd backend
+npm install
+npm run dev
+```
+
+A API expos endpoints mockados em `/api/projects` e `/api/ai/actions`. Ajuste a porta via variavel `PORT` em um arquivo `.env` se necessario.
