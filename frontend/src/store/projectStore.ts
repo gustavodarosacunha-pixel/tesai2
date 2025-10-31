@@ -101,15 +101,16 @@ type ProjectState = {
   selectedProjectId: string | null
   aiMessages: AIMessage[]
   loading: boolean
-  actions: {
-    selectProject: (projectId: string) => void
-    createProject: (project: Project) => void
-    updateTask: (projectId: string, task: Partial<Task> & { id: string }) => void
-    createTask: (projectId: string, task: Task) => void
-    addAiMessage: (message: AIMessage) => void
-    setLoading: (value: boolean) => void
-    applyAiProjectUpdate: (project: Project) => void
-  }
+}
+
+type ProjectActions = {
+  selectProject: (projectId: string) => void
+  createProject: (project: Project) => void
+  updateTask: (projectId: string, task: Partial<Task> & { id: string }) => void
+  createTask: (projectId: string, task: Task) => void
+  addAiMessage: (message: AIMessage) => void
+  setLoading: (value: boolean) => void
+  applyAiProjectUpdate: (project: Project) => void
 }
 
 const defaultMessages: AIMessage[] = [
@@ -121,67 +122,65 @@ const defaultMessages: AIMessage[] = [
   },
 ]
 
-export const useProjectStore = create<ProjectState>()(
+export const useProjectStore = create<ProjectState & ProjectActions>()(
   immer((set) => ({
     projects: initialProjects,
     selectedProjectId: initialProjects[0]?.id ?? null,
     aiMessages: defaultMessages,
     loading: false,
-    actions: {
-      selectProject: (projectId) =>
-        set((state) => {
-          state.selectedProjectId = projectId
-        }),
-      createProject: (project) =>
-        set((state) => {
+    selectProject: (projectId) =>
+      set((state) => {
+        state.selectedProjectId = projectId
+      }),
+    createProject: (project) =>
+      set((state) => {
+        state.projects.push(project)
+        state.selectedProjectId = project.id
+      }),
+    updateTask: (projectId, patch) =>
+      set((state) => {
+        const project = state.projects.find((p) => p.id === projectId)
+        if (!project) return
+        const task = project.tasks.find((t) => t.id === patch.id)
+        if (!task) return
+        Object.assign(task, patch)
+        project.updatedAt = new Date().toISOString()
+      }),
+    createTask: (projectId, task) =>
+      set((state) => {
+        const project = state.projects.find((p) => p.id === projectId)
+        if (!project) return
+        project.tasks.push(task)
+        project.updatedAt = new Date().toISOString()
+      }),
+    addAiMessage: (message) =>
+      set((state) => {
+        state.aiMessages.push(message)
+      }),
+    setLoading: (value) =>
+      set((state) => {
+        state.loading = value
+      }),
+    applyAiProjectUpdate: (project) =>
+      set((state) => {
+        const index = state.projects.findIndex((p) => p.id === project.id)
+        if (index >= 0) {
+          state.projects[index] = project
+        } else {
           state.projects.push(project)
-          state.selectedProjectId = project.id
-        }),
-      updateTask: (projectId, patch) =>
-        set((state) => {
-          const project = state.projects.find((p) => p.id === projectId)
-          if (!project) return
-          const task = project.tasks.find((t) => t.id === patch.id)
-          if (!task) return
-          Object.assign(task, patch)
-          project.updatedAt = new Date().toISOString()
-        }),
-      createTask: (projectId, task) =>
-        set((state) => {
-          const project = state.projects.find((p) => p.id === projectId)
-          if (!project) return
-          project.tasks.push(task)
-          project.updatedAt = new Date().toISOString()
-        }),
-      addAiMessage: (message) =>
-        set((state) => {
-          state.aiMessages.push(message)
-        }),
-      setLoading: (value) =>
-        set((state) => {
-          state.loading = value
-        }),
-      applyAiProjectUpdate: (project) =>
-        set((state) => {
-          const index = state.projects.findIndex((p) => p.id === project.id)
-          if (index >= 0) {
-            state.projects[index] = project
-          } else {
-            state.projects.push(project)
-          }
-          state.selectedProjectId = project.id
-        }),
-    },
+        }
+        state.selectedProjectId = project.id
+      }),
   }))
 )
 
-export const selectProjects = (state: ProjectState): ProjectSummary[] =>
+export const selectProjects = (state: ProjectState & ProjectActions): ProjectSummary[] =>
   state.projects.map(({ tasks, ...summary }) => summary)
 
-export const selectCurrentProject = (state: ProjectState): Project | undefined =>
+export const selectCurrentProject = (state: ProjectState & ProjectActions): Project | undefined =>
   state.projects.find((project) => project.id === state.selectedProjectId)
 
-export const selectTasksByProject = (projectId: string) => (state: ProjectState): Task[] => {
+export const selectTasksByProject = (projectId: string) => (state: ProjectState & ProjectActions): Task[] => {
   const project = state.projects.find((p) => p.id === projectId)
   return project?.tasks ?? []
 }

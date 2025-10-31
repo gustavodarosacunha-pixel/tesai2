@@ -16,13 +16,15 @@ export const ProjectDetailPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
   const project = useProjectStore(selectCurrentProject)
-  const { createTask: createTaskAction, updateTask: updateTaskAction } = useProjectStore.getState().actions
+  const selectProject = useProjectStore((state) => state.selectProject)
+  const createTaskAction = useProjectStore((state) => state.createTask)
+  const updateTaskAction = useProjectStore((state) => state.updateTask)
 
   useEffect(() => {
     if (projectId) {
-      useProjectStore.getState().actions.selectProject(projectId)
+      selectProject(projectId)
     }
-  }, [projectId])
+  }, [projectId, selectProject])
 
   useEffect(() => {
     if (!project && projectId) {

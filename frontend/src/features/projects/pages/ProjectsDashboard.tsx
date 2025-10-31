@@ -12,7 +12,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 
 export const ProjectsDashboard = () => {
   const projects = useProjectStore((state) => state.projects)
-  const createProject = useProjectStore.getState().actions.createProject
+  const createProject = useProjectStore((state) => state.createProject)
 
   const metrics = useMemo(() => {
     const total = projects.length
