@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Clock, Zap, Layers } from 'lucide-react'
-import { useProjectStore, selectProjects } from '@/store/projectStore'
+import { useProjectStore } from '@/store/projectStore'
 import { formatDate } from '@/lib/utils'
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -11,8 +11,8 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 }
 
 export const ProjectsDashboard = () => {
-  const projects = useProjectStore(selectProjects)
-  const { actions } = useProjectStore((state) => ({ actions: state.actions }))
+  const projects = useProjectStore((state) => state.projects)
+  const actions = useProjectStore((state) => state.actions)
 
   const metrics = useMemo(() => {
     const total = projects.length

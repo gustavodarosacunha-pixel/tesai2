@@ -1,10 +1,10 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { Projector, Menu, User } from 'lucide-react'
-import { useProjectStore, selectProjects } from '@/store/projectStore'
+import { useProjectStore } from '@/store/projectStore'
 import { cn } from '@/lib/utils'
 
 export const AppLayout = () => {
-  const projects = useProjectStore(selectProjects)
+  const projects = useProjectStore((state) => state.projects)
 
   return (
     <div className="min-h-screen bg-slate-100">
