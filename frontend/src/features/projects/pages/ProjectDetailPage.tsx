@@ -22,7 +22,10 @@ export const ProjectDetailPage = () => {
 
   useEffect(() => {
     if (projectId) {
-      selectProject(projectId)
+      const currentId = useProjectStore.getState().selectedProjectId
+      if (currentId !== projectId) {
+        selectProject(projectId)
+      }
     }
   }, [projectId, selectProject])
 
