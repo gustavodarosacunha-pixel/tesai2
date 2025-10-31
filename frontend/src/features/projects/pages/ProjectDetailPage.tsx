@@ -16,13 +16,15 @@ export const ProjectDetailPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
   const project = useProjectStore(selectCurrentProject)
-  const actions = useProjectStore((state) => state.actions)
+  const selectProjectAction = useProjectStore((state) => state.actions.selectProject)
+  const createTaskAction = useProjectStore((state) => state.actions.createTask)
+  const updateTaskAction = useProjectStore((state) => state.actions.updateTask)
 
   useEffect(() => {
     if (projectId) {
-      actions.selectProject(projectId)
+      selectProjectAction(projectId)
     }
-  }, [projectId, actions])
+  }, [projectId, selectProjectAction])
 
   useEffect(() => {
     if (!project && projectId) {
@@ -52,11 +54,11 @@ export const ProjectDetailPage = () => {
       status: 'not_started',
       dependencies: [],
     }
-    actions.createTask(project.id, newTask)
+    createTaskAction(project.id, newTask)
   }
 
   const handleUpdateTask = (taskId: string, patch: Partial<Task>) => {
-    actions.updateTask(project.id, { ...patch, id: taskId })
+    updateTaskAction(project.id, { ...patch, id: taskId })
   }
 
   return (

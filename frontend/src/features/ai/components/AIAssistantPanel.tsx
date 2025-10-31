@@ -16,27 +16,29 @@ export const AIAssistantPanel = () => {
 
   const selectedProjectId = useProjectStore((state) => state.selectedProjectId)
   const aiMessages = useProjectStore((state) => state.aiMessages)
-  const actions = useProjectStore((state) => state.actions)
   const projects = useProjectStore((state) => state.projects)
+  const addAiMessage = useProjectStore((state) => state.actions.addAiMessage)
+  const setLoading = useProjectStore((state) => state.actions.setLoading)
+  const applyAiProjectUpdate = useProjectStore((state) => state.actions.applyAiProjectUpdate)
 
   const currentProject = projects.find((project) => project.id === selectedProjectId)
 
   const sendMessage = async (intent: AIIntent, message: string) => {
     if (!selectedProjectId || !message) return
 
-    actions.addAiMessage({
+    addAiMessage({
       id: `msg-${crypto.randomUUID()}`,
       role: 'user',
       content: message,
       createdAt: new Date().toISOString(),
     })
 
-    actions.setLoading(true)
+    setLoading(true)
 
     const response = await aiClient.act({ projectId: selectedProjectId, intent, message })
 
-    actions.applyAiProjectUpdate(response.project)
-    actions.addAiMessage({
+    applyAiProjectUpdate(response.project)
+    addAiMessage({
       id: `msg-${crypto.randomUUID()}`,
       role: 'assistant',
       content: response.summary,
@@ -44,7 +46,7 @@ export const AIAssistantPanel = () => {
     })
 
     setSuggestions(response.suggestions)
-    actions.setLoading(false)
+    setLoading(false)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

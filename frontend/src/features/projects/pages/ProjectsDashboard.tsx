@@ -12,7 +12,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 
 export const ProjectsDashboard = () => {
   const projects = useProjectStore((state) => state.projects)
-  const actions = useProjectStore((state) => state.actions)
+  const createProject = useProjectStore((state) => state.actions.createProject)
 
   const metrics = useMemo(() => {
     const total = projects.length
@@ -33,7 +33,7 @@ export const ProjectsDashboard = () => {
     const newId = `proj-${crypto.randomUUID().slice(0, 6)}`
     const today = new Date().toISOString()
 
-    actions.createProject({
+    createProject({
       id: newId,
       name: 'Novo Projeto',
       description: 'Projeto criado rapidamente para prototipagem.',
