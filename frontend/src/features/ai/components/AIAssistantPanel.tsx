@@ -14,12 +14,10 @@ export const AIAssistantPanel = () => {
   const [input, setInput] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
 
-  const { selectedProjectId, aiMessages, actions, projects } = useProjectStore((state) => ({
-    selectedProjectId: state.selectedProjectId,
-    aiMessages: state.aiMessages,
-    actions: state.actions,
-    projects: state.projects,
-  }))
+  const selectedProjectId = useProjectStore((state) => state.selectedProjectId)
+  const aiMessages = useProjectStore((state) => state.aiMessages)
+  const actions = useProjectStore((state) => state.actions)
+  const projects = useProjectStore((state) => state.projects)
 
   const currentProject = projects.find((project) => project.id === selectedProjectId)
 

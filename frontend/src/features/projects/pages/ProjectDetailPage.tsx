@@ -15,10 +15,8 @@ export const ProjectDetailPage = () => {
   const navigate = useNavigate()
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
-  const { project, actions } = useProjectStore((state) => ({
-    project: selectCurrentProject(state),
-    actions: state.actions,
-  }))
+  const project = useProjectStore(selectCurrentProject)
+  const actions = useProjectStore((state) => state.actions)
 
   useEffect(() => {
     if (projectId) {
