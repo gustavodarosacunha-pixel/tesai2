@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { Projector, Menu, User } from 'lucide-react'
+import { Menu, Projector, User } from 'lucide-react'
 import { useProjectStore } from '@/store/projectStore'
 import { cn } from '@/lib/utils'
 
@@ -14,9 +14,10 @@ export const AppLayout = () => {
             <Projector className="h-5 w-5 text-brand-600" />
             <span>SmartProjectAI</span>
           </Link>
-          <nav className="flex items-center gap-8 text-sm text-slate-600">
+          <nav className="flex items-center gap-6 text-sm text-slate-600">
             <NavLink
               to="/"
+              end
               className={({ isActive }) =>
                 cn('hidden items-center gap-2 sm:flex', isActive && 'text-brand-600 font-semibold')
               }
@@ -34,9 +35,7 @@ export const AppLayout = () => {
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-8 lg:grid-cols-[240px_1fr]">
         <aside className="hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-soft lg:block">
-          <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Projetos
-          </div>
+          <div className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Projetos</div>
           <ul className="space-y-2 text-sm">
             {projects.map((project) => (
               <li key={project.id}>
@@ -50,7 +49,9 @@ export const AppLayout = () => {
                   }
                 >
                   <div className="font-medium">{project.name}</div>
-                  <div className="text-xs text-slate-500">Atualizado {new Date(project.updatedAt).toLocaleDateString('pt-BR')}</div>
+                  <div className="text-xs text-slate-500">
+                    Atualizado em {new Date(project.updatedAt).toLocaleDateString('pt-BR')}
+                  </div>
                 </NavLink>
               </li>
             ))}

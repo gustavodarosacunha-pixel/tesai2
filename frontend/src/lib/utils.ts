@@ -3,8 +3,8 @@ import { twMerge } from 'tailwind-merge'
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
 
-export const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(value))
+export const formatDate = (iso: string) =>
+  new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(iso))
 
 export const formatStatus = (status: string) =>
   status

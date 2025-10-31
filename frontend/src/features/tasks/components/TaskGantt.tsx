@@ -10,7 +10,7 @@ export const TaskGantt = ({ tasks }: TaskGanttProps) => {
   if (tasks.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">
-        Nenhuma tarefa para exibir no momento. Crie tarefas na aba tabela para visualizar o cronograma.
+        Nenhuma tarefa para exibir agora. Crie itens na aba tabela para visualizar o cronograma simplificado.
       </div>
     )
   }
@@ -36,7 +36,7 @@ export const TaskGantt = ({ tasks }: TaskGanttProps) => {
       <div className="overflow-x-auto px-6 py-4">
         <div className="min-w-[720px]">
           <div className="grid grid-cols-[240px_1fr] text-xs font-medium uppercase tracking-wide text-slate-500">
-            <div>Task</div>
+            <div>Tarefa</div>
             <div className="relative">
               <div className="absolute inset-0 flex">
                 {calendar.map((day) => (
@@ -48,7 +48,7 @@ export const TaskGantt = ({ tasks }: TaskGanttProps) => {
             </div>
           </div>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-5 space-y-3">
             {parsedTasks.map((task) => {
               const startOffset = differenceInCalendarDays(task.start, minDate)
               const duration = Math.max(differenceInCalendarDays(task.end, task.start) + 1, 1)

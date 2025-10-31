@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { Sparkles, Send } from 'lucide-react'
+import { Send, Sparkles } from 'lucide-react'
 import { aiClient } from '@/services/aiClient'
 import { useProjectStore } from '@/store/projectStore'
 import type { AIIntent } from '@/types/project'
 
-const quickActions: { intent: AIIntent; label: string; message: string }[] = [
-  { intent: 'generate_wbs', label: 'Gerar EAP', message: 'Crie uma estrutura analitica do projeto completa.' },
-  { intent: 'suggest_next_steps', label: 'Proximos passos', message: 'Quais sao os proximos passos sugeridos?' },
-  { intent: 'update_status', label: 'Atualizar status', message: 'Resuma o status atual e destaque riscos.' },
+const quickActions: { intent: AIIntent; label: string; prompt: string }[] = [
+  { intent: 'generate_wbs', label: 'Gerar EAP', prompt: 'Crie uma estrutura analitica detalhada para este projeto.' },
+  { intent: 'suggest_next_steps', label: 'Proximos passos', prompt: 'Quais sao os proximos passos recomendados?' },
+  { intent: 'update_status', label: 'Atualizar status', prompt: 'Resuma o status atual e destaque riscos relevantes.' },
 ]
 
 export const AIAssistantPanel = () => {
@@ -15,29 +15,32 @@ export const AIAssistantPanel = () => {
   const [suggestions, setSuggestions] = useState<string[]>([])
 
   const selectedProjectId = useProjectStore((state) => state.selectedProjectId)
-  const aiMessages = useProjectStore((state) => state.aiMessages)
   const projects = useProjectStore((state) => state.projects)
+  const aiMessages = useProjectStore((state) => state.aiMessages)
+  const loading = useProjectStore((state) => state.loading)
   const addAiMessage = useProjectStore((state) => state.addAiMessage)
   const setLoading = useProjectStore((state) => state.setLoading)
-  const applyAiProjectUpdate = useProjectStore((state) => state.applyAiProjectUpdate)
+  const applyAiResponse = useProjectStore((state) => state.applyAiResponse)
 
   const currentProject = projects.find((project) => project.id === selectedProjectId)
 
   const sendMessage = async (intent: AIIntent, message: string) => {
-    if (!selectedProjectId || !message) return
+    if (!selectedProjectId || message.trim().length === 0) return
+
+    const userMessage = message.trim()
 
     addAiMessage({
       id: `msg-${crypto.randomUUID()}`,
       role: 'user',
-      content: message,
+      content: userMessage,
       createdAt: new Date().toISOString(),
     })
 
     setLoading(true)
 
-    const response = await aiClient.act({ projectId: selectedProjectId, intent, message })
+    const response = await aiClient.act({ projectId: selectedProjectId, intent, message: userMessage })
 
-    applyAiProjectUpdate(response.project)
+    applyAiResponse(response)
     addAiMessage({
       id: `msg-${crypto.randomUUID()}`,
       role: 'assistant',
@@ -51,25 +54,18 @@ export const AIAssistantPanel = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const trimmed = input.trim()
-    if (!trimmed) return
-    await sendMessage('custom', trimmed)
+    await sendMessage('custom', input)
     setInput('')
-  }
-
-  const handleQuickAction = async (intent: AIIntent, message: string) => {
-    await sendMessage(intent, message)
   }
 
   return (
     <aside className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white shadow-soft">
       <div className="border-b border-slate-200 px-5 py-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-          <Sparkles className="h-4 w-4 text-brand-500" />
-          Gemini Flash 2.5
+          <Sparkles className="h-4 w-4 text-brand-500" /> Gemini Flash 2.5
         </div>
         <p className="mt-1 text-xs text-slate-500">
-          O agente da Google utiliza o contexto do projeto selecionado para gerar tarefas, atualizar cronogramas e responder duvidas.
+          O agente utiliza o contexto do projeto selecionado para gerar tarefas, responder duvidas e sugerir proximos passos.
         </p>
       </div>
 
@@ -78,8 +74,9 @@ export const AIAssistantPanel = () => {
           {quickActions.map((action) => (
             <button
               key={action.intent}
-              onClick={() => handleQuickAction(action.intent, action.message)}
               className="rounded-full border border-brand-200 bg-brand-50 px-4 py-1.5 text-xs font-medium text-brand-700 transition hover:bg-brand-100"
+              onClick={() => sendMessage(action.intent, action.prompt)}
+              disabled={loading}
             >
               {action.label}
             </button>
@@ -90,7 +87,7 @@ export const AIAssistantPanel = () => {
       <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
         {currentProject && (
           <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600">
-            <p className="font-semibold text-slate-700">Projeto atual (contexto enviado ao Gemini)</p>
+            <p className="font-semibold text-slate-700">Projeto atual</p>
             <p className="mt-1">{currentProject.name}</p>
             <p className="mt-1">Owner: {currentProject.owner}</p>
             <p className="mt-1">Tarefas: {currentProject.tasks.length}</p>
@@ -99,10 +96,7 @@ export const AIAssistantPanel = () => {
 
         <div className="space-y-3">
           {aiMessages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
-            >
+            <div key={message.id} className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}>
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                   message.role === 'assistant'
@@ -118,10 +112,10 @@ export const AIAssistantPanel = () => {
 
         {suggestions.length > 0 && (
           <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-xs text-brand-700">
-            <p className="font-semibold">Sugestoes geradas</p>
+            <p className="font-semibold">Sugestoes do Gemini</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               {suggestions.map((item, index) => (
-                <li key={index}>{item}</li>
+                <li key={`${item}-${index}`}>{item}</li>
               ))}
             </ul>
           </div>
@@ -135,8 +129,9 @@ export const AIAssistantPanel = () => {
             placeholder="Pergunte algo ao assistente..."
             value={input}
             onChange={(event) => setInput(event.target.value)}
+            disabled={loading || !selectedProjectId}
           />
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="btn-primary" disabled={loading || !selectedProjectId}>
             <Send className="h-4 w-4" />
             Enviar
           </button>

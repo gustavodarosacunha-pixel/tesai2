@@ -4,7 +4,7 @@ import { ProjectsDashboard } from '@/features/projects/pages/ProjectsDashboard'
 import { ProjectDetailPage } from '@/features/projects/pages/ProjectDetailPage'
 import { useProjectStore } from '@/store/projectStore'
 
-function App() {
+const App = () => {
   const selectedProjectId = useProjectStore((state) => state.selectedProjectId)
 
   return (

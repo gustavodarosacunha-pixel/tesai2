@@ -6,21 +6,21 @@ type AIRequestPayload = {
   message: string
 }
 
-const fallbackResponse = (payload: AIRequestPayload): AIActionResponse => ({
+const fallbackResponse = (input: AIRequestPayload): AIActionResponse => ({
   project: {
-    id: payload.projectId,
+    id: input.projectId,
     name: 'Projeto mock',
-    description: 'Resposta gerada localmente porque o backend ou a API Gemini nao estavam acessiveis.',
+    description: 'Resposta gerada localmente porque a API Gemini nao estava acessivel.',
     owner: 'mock@smartproject.ai',
     status: 'on_track',
     updatedAt: new Date().toISOString(),
     defaultAssignees: ['Equipe AI'],
     tasks: [],
   },
-  summary: `Nao foi possivel acessar o assistente Gemini Flash 2.5. Mensagem original: ${payload.message}`,
+  summary: `Nao foi possivel acessar o assistente Gemini. Mensagem original: ${input.message}`,
   suggestions: [
-    'Verifique se o servidor backend esta em execucao',
-    'Confirme a variavel de ambiente GEMINI_API_KEY e o modelo configurado',
+    'Verifique se o backend esta em execucao',
+    'Confirme a variavel GEMINI_API_KEY no servidor',
   ],
 })
 
@@ -39,7 +39,7 @@ export const aiClient = {
 
       return (await response.json()) as AIActionResponse
     } catch (error) {
-      console.warn('Erro chamando agente de IA, usando fallback local.', error)
+      console.warn('Erro ao chamar o agente Gemini, usando fallback local.', error)
       return fallbackResponse(payload)
     }
   },
