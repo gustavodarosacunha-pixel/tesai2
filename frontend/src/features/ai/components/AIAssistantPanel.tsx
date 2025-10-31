@@ -17,9 +17,7 @@ export const AIAssistantPanel = () => {
   const selectedProjectId = useProjectStore((state) => state.selectedProjectId)
   const aiMessages = useProjectStore((state) => state.aiMessages)
   const projects = useProjectStore((state) => state.projects)
-  const addAiMessage = useProjectStore((state) => state.actions.addAiMessage)
-  const setLoading = useProjectStore((state) => state.actions.setLoading)
-  const applyAiProjectUpdate = useProjectStore((state) => state.actions.applyAiProjectUpdate)
+  const { addAiMessage, setLoading, applyAiProjectUpdate } = useProjectStore.getState().actions
 
   const currentProject = projects.find((project) => project.id === selectedProjectId)
 
